@@ -3,7 +3,7 @@ import { Product } from "@/constants/interface/ProductListInterface";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import React from "react";
-import { ScrollView } from "react-native";
+import { FlatList, StyleSheet, View, Text } from "react-native";
 
 const Products = () => {
   const { isPending, isLoading, isError, data } = useQuery({
@@ -17,9 +17,10 @@ const Products = () => {
   const categoryFilter = new Set(data?.map((el: any) => el?.category?.name));
 
   return (
-    <ScrollView>
-      {data?.map((item: Product, index: number) => (
-        <Link key={index} href={`/products/${item?.id}`}>
+    <FlatList<Product>
+      data={data ?? []}
+      renderItem={({ item }) => (
+        <Link href={`/products/${item.id}`}>
           <ProductCard
             title={item?.title}
             image={item?.images[0]}
@@ -27,9 +28,27 @@ const Products = () => {
             price={item?.price}
           />
         </Link>
-      ))}
-    </ScrollView>
+      )}
+      keyExtractor={(item) => item.id.toString()}
+      numColumns={2}
+      contentContainerStyle={styles.container}
+    />
   );
 };
 
 export default Products;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 30,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  cardWrapper: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+});
