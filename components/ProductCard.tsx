@@ -20,10 +20,10 @@ export function ProductCard({
         source={{ uri: image || "../assets/images/images.jpeg" }}
         style={styles.image}
         resizeMode="cover"
-        defaultSource={require("../assets/images/images.jpeg")} // Fallback for Android
-      />{" "}
+        defaultSource={require("../assets/images/images.jpeg")}
+      />
       <View style={styles.textContainer}>
-        <Text style={styles.brandText}>Film and Tinder</Text>
+        <Text style={styles.brandText}>{category}</Text>
         <Text numberOfLines={2} style={styles.title}>
           {title}
         </Text>
