@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
 } from "react-native";
 
 const Products = () => {
@@ -21,8 +22,8 @@ const Products = () => {
   });
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Extract unique categories
   const seen = new Set();
   const uniqueCategories = data
     ?.filter((el: any) => {
@@ -33,11 +34,21 @@ const Products = () => {
     })
     .map((el: any) => el.category);
 
-  // Filter products based on selected category
   const filteredData = useMemo(() => {
-    if (!selectedCategoryId) return data ?? [];
-    return data?.filter((item: any) => item?.category?.id === selectedCategoryId);
-  }, [data, selectedCategoryId]);
+    let filtered = data ?? [];
+
+    if (selectedCategoryId) {
+      filtered = filtered.filter((item: any) => item?.category?.id === selectedCategoryId);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter((item: any) =>
+        item?.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [data, selectedCategoryId, searchTerm]);
 
   if (isPending || isLoading) {
     return <Text>Loading...</Text>;
@@ -66,49 +77,56 @@ const Products = () => {
       numColumns={2}
       contentContainerStyle={styles.container}
       ListHeaderComponent={
-        <View style={styles.filterContainer}>
-          {/* All Chip */}
-          <Pressable
-            style={[
-              styles.chip,
-              selectedCategoryId === null && styles.chipSelected,
-            ]}
-            onPress={() => setSelectedCategoryId(null)}
-          >
-            <Text
-              style={[
-                styles.chipText,
-                selectedCategoryId === null && styles.chipTextSelected,
-              ]}
-            >
-              All
-            </Text>
-          </Pressable>
+        <View style={styles.headerContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by title..."
+            value={searchTerm}
+            onChangeText={setSearchTerm}
+          />
 
-          {/* Category Chips */}
-          {uniqueCategories?.map((item: any) => (
+          <View style={styles.filterContainer}>
             <Pressable
-              key={item?.id}
               style={[
                 styles.chip,
-                selectedCategoryId === item?.id && styles.chipSelected,
+                selectedCategoryId === null && styles.chipSelected,
               ]}
-              onPress={() =>
-                setSelectedCategoryId(
-                  selectedCategoryId === item?.id ? null : item?.id
-                )
-              }
+              onPress={() => setSelectedCategoryId(null)}
             >
               <Text
                 style={[
                   styles.chipText,
-                  selectedCategoryId === item?.id && styles.chipTextSelected,
+                  selectedCategoryId === null && styles.chipTextSelected,
                 ]}
               >
-                {item?.name}
+                All
               </Text>
             </Pressable>
-          ))}
+
+            {uniqueCategories?.map((item: any) => (
+              <Pressable
+                key={item?.id}
+                style={[
+                  styles.chip,
+                  selectedCategoryId === item?.id && styles.chipSelected,
+                ]}
+                onPress={() =>
+                  setSelectedCategoryId(
+                    selectedCategoryId === item?.id ? null : item?.id
+                  )
+                }
+              >
+                <Text
+                  style={[
+                    styles.chipText,
+                    selectedCategoryId === item?.id && styles.chipTextSelected,
+                  ]}
+                >
+                  {item?.name}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
       }
     />
@@ -122,6 +140,20 @@ const styles = StyleSheet.create({
     padding: 30,
     flexGrow: 1,
     alignItems: "center",
+  },
+  headerContainer: {
+    width: "100%",
+    paddingBottom: 20,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 20,
+    marginBottom: 20,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    color:"#cccccc"
   },
   filterContainer: {
     flexDirection: "row",

@@ -97,7 +97,7 @@ const ProductDetails = () => {
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.brand}>Film and Tinder</Text>
+        <Text style={styles.brand}>{product?.category?.name}</Text>
         <Text style={styles.title}>{product.title}</Text>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         
