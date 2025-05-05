@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState, useRef } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  Image, 
-  Dimensions, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Dimensions,
   FlatList,
 } from "react-native";
 
@@ -41,7 +41,7 @@ const ProductDetails = () => {
 
   const renderPagination = () => {
     if (!product?.images) return null;
-    
+
     return (
       <View style={styles.paginationContainer}>
         {product.images.map((_, index) => (
@@ -49,7 +49,7 @@ const ProductDetails = () => {
             key={index}
             style={[
               styles.paginationDot,
-              activeIndex === index && styles.activeDot
+              activeIndex === index && styles.activeDot,
             ]}
           />
         ))}
@@ -66,19 +66,19 @@ const ProductDetails = () => {
   }
 
   const descriptionPoints = product.description
-    .split('\n')
-    .filter(point => point.trim() !== '');
+    .split("\n")
+    .filter((point) => point.trim() !== "");
 
   return (
     <ScrollView style={styles.container}>
-   <View style={styles.carouselContainer}>
+      <View style={styles.carouselContainer}>
         <FlatList
           ref={flatListRef}
           data={product.images}
           renderItem={({ item }) => (
-            <Image 
-              source={{ uri: item }} 
-              style={styles.productImage} 
+            <Image
+              source={{ uri: item }}
+              style={styles.productImage}
               resizeMode="contain"
             />
           )}
@@ -100,7 +100,7 @@ const ProductDetails = () => {
         <Text style={styles.brand}>{product?.category?.name}</Text>
         <Text style={styles.title}>{product.title}</Text>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-        
+
         <Text style={styles.sectionTitle}>Description</Text>
         {descriptionPoints.map((item, index) => (
           <Text key={index} style={styles.descriptionItem}>
